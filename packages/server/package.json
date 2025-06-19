@@ -1,0 +1,22 @@
+{
+  "name": "marino-server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/index.js",
+  "private": true,
+  "scripts": {
+    "dev": "nodemon",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "nodemon": "^3.1.4",
+    "pg": "^8.15.6",
+    "ts-node": "^10.9.2",
+    "typeorm": "^0.3.23",
+    "typescript": "^5.5.4",
+    "tyran5": "*",
+    "shared": "*"
+  }
+}

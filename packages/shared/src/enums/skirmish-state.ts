@@ -1,0 +1,6 @@
+export const SkirmishState = {
+  NOT_STARTED: 'NOT_STARTED',
+  PRELIMINARY_SETUP: 'PRELIMINARY_SETUP',
+  IN_PROGRESS: 'IN_PROGRESS',
+  COMPLETED: 'COMPLETED',
+} as const;

@@ -1,0 +1,1 @@
+export type CommandsDefinition = Record<string, string>;
