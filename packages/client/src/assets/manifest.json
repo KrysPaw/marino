@@ -1,17 +1,17 @@
 {
-  "bundles": [
-    {
-      "name": "sprites",
-      "assets": [
-        {
-          "alias": "sea_tile",
-          "src": "./images/sea_tile.png"
-        },
-        {
-          "alias": "sea_background",
-          "src": "./images/sea_background.png"
-        }
-      ]
-    }
-  ]
+	"bundles": [
+		{
+			"name": "sprites",
+			"assets": [
+				{
+					"alias": "sea_tile",
+					"src": "./images/sea_tile.png"
+				},
+				{
+					"alias": "sea_background",
+					"src": "./images/sea_background.png"
+				}
+			]
+		}
+	]
 }

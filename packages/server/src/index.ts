@@ -1,20 +1,5 @@
-import { Tyran, TyranSetup } from "tyran5";
-import { LobbySpace } from "./lobby/index.js";
+import { app } from './app';
 
-@TyranSetup({
-    spaces: [
-        LobbySpace
-    ]
-})
-export class Setup { }
+app.startListening();
 
-// AppDataSource.initialize()
-//     .then(() => console.log("Database connected successfully"))
-//     .catch((error) => console.error("Database connection failed:", error))
-
-const tyran = Tyran.createApp(Setup, {
-    defaultSpace: 'LOBBY',
-    // TypeOrmAppDataSource: AppDataSource,
-});
-
-tyran.listen(3000);
+console.log('Tyran6 server is running...');

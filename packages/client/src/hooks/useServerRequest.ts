@@ -1,18 +1,22 @@
-import { TyranClient } from "../services/tyran-client/tyran-client";
-import type { TyranCommandAction, TyranCommandsType, ValueOf } from "@shared";
-import type { z } from "zod/v4";
+import type {
+	TyranCommandAction,
+	TyranCommandPayloadType,
+	ValueOf,
+} from '@shared';
+import { TyranClient } from '../services/tyran-client/tyran-client';
 
+export const useServerRequest = () => {
+	const client = TyranClient.getInstance();
 
-export const UseServerRequest = () => {
-  const client = TyranClient.getInstance();
-
-  return {
-    send: <T extends ValueOf<typeof TyranCommandAction>>(
-      action: T,
-      payload: z.infer<TyranCommandsType[T]['clientRequestSchema']>,
-      onServerResponse?: (payload: z.infer<TyranCommandsType[T]['serverResponseSchema']>) => void
-    ) => {
-      client.sendCommand(action, payload, onServerResponse);
-    }
-  }
+	return {
+		send: <T extends ValueOf<typeof TyranCommandAction>>(
+			action: T,
+			payload: TyranCommandPayloadType<T, 'request'>,
+			onServerResponse?: (
+				payload: TyranCommandPayloadType<T, 'response'>,
+			) => void,
+		) => {
+			client.sendRequestCommand(action, payload, onServerResponse);
+		},
+	};
 };

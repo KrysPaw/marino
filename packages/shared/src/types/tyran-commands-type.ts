@@ -1,17 +1,11 @@
-import { z } from "zod";
-import { TyranCommandAction } from "../enums/tyran-command-action";
-import { TyranSpace } from "../enums/tyran-space";
+import type { z } from 'zod';
+import type { TyranCommandAction } from '../enums/tyran-command-action';
 
 export type TyranCommandsType = {
-  [Command in keyof typeof TyranCommandAction]: {
-    space: keyof typeof TyranSpace;
-    /** When client requests from server */
-    clientRequestSchema: z.ZodType;
-    /** When client responds to server request */
-    clientResponseSchema: z.ZodType;
-    /** When server requests from client */
-    serverRequestSchema: z.ZodType;
-    /** When server responds to client request */
-    serverResponseSchema: z.ZodType;
-  };
+	[Command in keyof typeof TyranCommandAction]: {
+		/** When client requests from server */
+		request: z.ZodType;
+		/** When client responds to server request */
+		response: z.ZodType;
+	};
 };

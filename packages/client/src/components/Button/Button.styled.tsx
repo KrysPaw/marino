@@ -3,65 +3,67 @@ import type { theme } from '../../config/theme';
 import { opacityToHex } from '../../utils/opacityToHex';
 
 type StyledButtonProps = {
-  $minWidth: string;
-  $state: 'default' | 'disabled' | 'loading';
+	$minWidth: string;
+	$state: 'default' | 'disabled' | 'loading';
 };
 
 const stateMap: Record<
-  StyledButtonProps['$state'],
-  {
-    background: keyof typeof theme.colors;
-    backgroundOpacity?: number;
-    borderColor: keyof typeof theme.colors | 'transparent';
-    color: keyof typeof theme.colors;
-    castShadows: boolean;
-    opacity: number;
-  }
+	StyledButtonProps['$state'],
+	{
+		background: keyof typeof theme.colors;
+		backgroundOpacity?: number;
+		borderColor: keyof typeof theme.colors | 'transparent';
+		color: keyof typeof theme.colors;
+		castShadows: boolean;
+		opacity: number;
+	}
 > = {
-  default: {
-    background: 'darkBlue_1',
-    borderColor: 'transparent',
-    backgroundOpacity: 1,
-    color: 'white_1',
-    castShadows: true,
-    opacity: 1,
-  },
-  disabled: {
-    background: 'darkBlue_1',
-    borderColor: 'transparent',
-    color: 'gray_2',
-    castShadows: false,
-    opacity: 0.5,
-  },
-  loading: {
-    background: 'darkBlue_2',
-    borderColor: 'darkBlue_1',
-    color: 'white_1',
-    castShadows: true,
-    opacity: 0.5,
-  },
+	default: {
+		background: 'darkBlue_1',
+		borderColor: 'transparent',
+		backgroundOpacity: 1,
+		color: 'white_1',
+		castShadows: true,
+		opacity: 1,
+	},
+	disabled: {
+		background: 'darkBlue_1',
+		borderColor: 'transparent',
+		color: 'gray_2',
+		castShadows: false,
+		opacity: 0.5,
+	},
+	loading: {
+		background: 'darkBlue_2',
+		borderColor: 'darkBlue_1',
+		color: 'white_1',
+		castShadows: true,
+		opacity: 0.5,
+	},
 };
 
 export const StyledButton = styled.button<StyledButtonProps>`
   ${({ theme, $state }) => {
-    return css`
+		return css`
       background-color: ${`${theme.colors[stateMap[$state].background]}${stateMap[$state].backgroundOpacity ? opacityToHex(stateMap[$state].backgroundOpacity) : 'FF'}`};
       border: 1px solid
-        ${stateMap[$state].borderColor === 'transparent'
-          ? 'transparent'
-          : theme.colors[stateMap[$state].borderColor]};
+        ${
+					stateMap[$state].borderColor === 'transparent'
+						? 'transparent'
+						: theme.colors[stateMap[$state].borderColor]
+				};
       color: ${theme.colors[stateMap[$state].color]};
     `;
-  }}
+	}}
 
   ${({ $state }) => {
-    if (stateMap[$state].castShadows) {
-      return css`
+		if (stateMap[$state].castShadows) {
+			return css`
         text-shadow: 4px 4px 6px rgba(66, 68, 90, 1);
         box-shadow: 0px 4px 8px 0px #00000033;
       `;
-    }
-  }}
+		}
+	}}
 
   opacity: ${({ $state }) => stateMap[$state].opacity};
   border-radius: 8px;
@@ -82,8 +84,8 @@ export const StyledButton = styled.button<StyledButtonProps>`
   transition: background-color 0.2s ease-in-out;
 
   ${({ $state }) =>
-    $state === 'default' &&
-    css`
+		$state === 'default' &&
+		css`
       &:hover {
         background: ${({ theme }) => theme.colors.dark};
         border-color: ${({ theme }) => theme.colors.darkBlue_2};
@@ -104,16 +106,16 @@ export const StyledButtonText = styled.div<{ $displayIcon: boolean }>`
   user-select: none;
 
   ${({ $displayIcon }) =>
-    $displayIcon &&
-    css`
+		$displayIcon &&
+		css`
       gap: 8px;
     `}
 
   > {
     div:first-of-type {
       ${({ $displayIcon }) =>
-        $displayIcon &&
-        css`
+				$displayIcon &&
+				css`
           min-width: 20px;
         `}
 

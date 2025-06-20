@@ -10,22 +10,12 @@ export const StyledModalHeader = styled.div`
   width: 100%;
   color: ${({ theme }) => theme.colors.white_1};
   font-size: 24px;
-
-  &::after {
-    content: '';
-    position: absolute;
-    left: 24px;
-    right: 24px;
-    bottom: 0;
-    height: 2px;
-    background: ${({ theme }) => theme.colors.dark};
-    opacity: 0.4;
-  }
 `;
 
 export const StyledModalBody = styled.div`
   height: 100%;
   padding: 24px;
+  padding-top: 0;
   color: ${({ theme }) => theme.colors.white_1};
 `;
 

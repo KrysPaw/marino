@@ -1,4 +1,4 @@
 export const TyranSpace = {
-  LOBBY: 'LOBBY',
-  GAME: 'GAME'
+	LOBBY: 'LOBBY',
+	GAME: 'GAME',
 } as const;

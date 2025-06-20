@@ -1,3 +1,4 @@
 export const TyranCommandAction = {
-  CREATE_GAME: 'CREATE_GAME',
+	SET_NICKNAME: 'SET_NICKNAME',
+	CREATE_GAME: 'CREATE_GAME',
 } as const satisfies Record<string, string>;

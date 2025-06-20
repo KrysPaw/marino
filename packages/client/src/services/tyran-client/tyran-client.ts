@@ -1,137 +1,177 @@
-import { TyranCommandAction, type TyranCommandsType, type ValueOf } from '@shared';
+import {
+	isTyranCommand,
+	isTyranCommandValid,
+	type TyranCommandAction,
+	type TyranCommandPayloadType,
+	type TyranCommandsType,
+	type ValueOf,
+} from '@shared';
+import { Storage } from 'src/storage/storage';
 import type { z } from 'zod/v4';
+import type { TyranRequest } from '../../../../shared/src/types/tyran-request';
 
 type RequestSubscription<T extends ValueOf<typeof TyranCommandAction>> = {
-  id: string;
-  action: T;
-  callback: (payload: z.infer<TyranCommandsType[T]['serverRequestSchema']>) => void;
+	id: string;
+	action: T;
+	callback: (payload: z.infer<TyranCommandsType[T]['request']>) => void;
 };
 
 type ResponseSubscription<T extends ValueOf<typeof TyranCommandAction>> = {
-  refId: string;
-  id: string;
-  action: T;
-  callback: (payload: z.infer<TyranCommandsType[T]['serverResponseSchema']>) => void;
+	refId: string;
+	action: T;
+	callback: (payload: TyranCommandPayloadType<T, 'response'>) => void;
 };
-
 
 // Communicate with a web socket server
 export class TyranClient {
-  private static instance: TyranClient;
-  private client!: WebSocket;
-  private serverRequestSubscriptions: { [K in ValueOf<typeof TyranCommandAction>]?: Record<RequestSubscription<K>['id'], RequestSubscription<K>> } = {};
-  private serverResponseSubscriptions: { [K in ValueOf<typeof TyranCommandAction>]?: Record<ResponseSubscription<K>['refId'], ResponseSubscription<K>> } = {};
+	private static instance: TyranClient;
+	private client!: WebSocket;
+	private serverRequestSubscriptions: {
+		[K in ValueOf<typeof TyranCommandAction>]?: Record<
+			RequestSubscription<K>['id'],
+			RequestSubscription<K>
+		>;
+	} = {};
+	private serverResponseSubscriptions: {
+		[K in ValueOf<typeof TyranCommandAction>]?: Record<
+			ResponseSubscription<K>['refId'],
+			ResponseSubscription<K>
+		>;
+	} = {};
 
-  private constructor() {
-    // Private constructor to prevent instantiation
-    this.connect();
-  }
+	private constructor() {
+		// Private constructor to prevent instantiation
+		this.connect();
+	}
 
-  public static getInstance(): TyranClient {
-    if (!TyranClient.instance) {
-      TyranClient.instance = new TyranClient();
-    }
+	public static getInstance(): TyranClient {
+		if (!TyranClient.instance) {
+			TyranClient.instance = new TyranClient();
+		}
 
-    return TyranClient.instance;
-  }
+		return TyranClient.instance;
+	}
 
-  public async connect(): Promise<void> {
-    this.client = new WebSocket('ws://localhost:3000');
+	public async connect(): Promise<void> {
+		console.log('Connect triggered', this.client?.readyState);
+		if (this.client && this.client.readyState === WebSocket.OPEN) {
+			console.warn('WebSocket is already connected.');
+			return;
+		}
 
-    // Assign on connect and on disconnect handlers
-    this.client.onopen = () => {
-      console.log('Connected to server');
-    };
+		this.client = new WebSocket('ws://localhost:3000');
 
-    this.client.onclose = () => {
-      console.log('Disconnected from server');
-    };
+		// Assign on connect and on disconnect handlers
+		this.client.onopen = () => {
+			console.log('Connected to server');
 
-    this.client.onmessage = (event) => {
-      const data = JSON.parse(event.data);
+			Storage.getInstance().setState((state) => {
+				state.general.connected = true;
+				state.general.connectionLost = false;
+				return state;
+			});
+		};
 
-      if (data.action === '_HANDSHAKE_') {
-        this.client.send(
-          JSON.stringify({
-            action: '_HANDSHAKE_',
-            payload: {
-              key: 'this.publicKey',
-            },
-          }),
-        );
+		this.client.onclose = () => {
+			Storage.getInstance().setState((state) => {
+				state.general.connected = false;
+				state.general.connectionLost = true;
+				return state;
+			});
+			console.log('Disconnected from server');
+		};
 
-        return;
-      } else if (data.action === '_HANDSHAKE_COMPLETE_') {
-        console.log('Handshake complete', data.payload);
-        return;
-      } else {
-        this.onRawMessage(data);
-      }
-    };
-  }
+		this.client.onmessage = (event) => {
+			const data = JSON.parse(event.data);
 
-  private onRawMessage(data: unknown): void {
-    console.log('Message received:', data);
-  }
+			this.onRawMessage(data);
+		};
+	}
 
-  subscribe<T extends ValueOf<typeof TyranCommandAction>>(
-    action: T,
-    callback: (payload: z.infer<TyranCommandsType[T]['serverRequestSchema']>) => void,
-  ): string {
-    const id = crypto.randomUUID();
-    const subscription: RequestSubscription<T> = { id, action, callback };
+	private onRawMessage(data: unknown): void {
+		if (!isTyranCommand(data)) {
+			console.error('Received invalid command:', data);
+			return;
+		}
 
-    if (!this.serverRequestSubscriptions[action]) {
-      this.serverRequestSubscriptions[action] = {};
-    }
+		if (!isTyranCommandValid(data)) {
+			console.error('Received invalid command structure:', data);
+			return;
+		}
 
-    this.serverRequestSubscriptions[action][id] = subscription;
+		// Handle response message
+		if ('refId' in data) {
+			const subscription =
+				this.serverResponseSubscriptions[data.action]?.[data.refId];
 
-    return id;
-  }
+			if (subscription) {
+				subscription.callback(data.payload);
+			}
+		}
+	}
 
-  unsubscribe<T extends ValueOf<typeof TyranCommandAction>>(id: string, action: T): boolean {
-    if (this.serverRequestSubscriptions[action] && this.serverRequestSubscriptions[action][id]) {
-      delete this.serverRequestSubscriptions[action][id];
-      return true;
-    }
+	subscribe<T extends ValueOf<typeof TyranCommandAction>>(
+		action: T,
+		callback: (payload: z.infer<TyranCommandsType[T]['request']>) => void,
+	): string {
+		const id = crypto.randomUUID();
+		const subscription: RequestSubscription<T> = { id, action, callback };
 
-    return false;
-  }
+		if (!this.serverRequestSubscriptions[action]) {
+			this.serverRequestSubscriptions[action] = {};
+		}
 
-  sendCommand<T extends ValueOf<typeof TyranCommandAction>>(
-    action: T,
-    payload: z.infer<TyranCommandsType[T]['clientRequestSchema']>,
-    onServerResponse?: (payload: z.infer<TyranCommandsType[T]['serverResponseSchema']>) => void,
-  ): void {
-    if (!this.client || this.client.readyState !== WebSocket.OPEN) {
-      console.error('WebSocket is not open. Cannot send command.');
-      return;
-    }
+		this.serverRequestSubscriptions[action][id] = subscription;
 
-    const refId = crypto.randomUUID();
-    const message = {
-      refId,
-      action,
-      payload,
-    };
+		return id;
+	}
 
-    // Handle server response if needed
-    if (onServerResponse) {
-      const responseSubscription: ResponseSubscription<T> = {
-        id: crypto.randomUUID(),
-        refId,
-        action,
-        callback: onServerResponse,
-      };
+	unsubscribe<T extends ValueOf<typeof TyranCommandAction>>(
+		id: string,
+		action: T,
+	): boolean {
+		if (this.serverRequestSubscriptions[action]?.[id]) {
+			delete this.serverRequestSubscriptions[action][id];
+			return true;
+		}
 
-      if (!this.serverResponseSubscriptions[action]) {
-        this.serverResponseSubscriptions[action] = {};
-      }
+		return false;
+	}
 
-      this.serverResponseSubscriptions[action][refId] = responseSubscription;
-    }
+	sendRequestCommand<T extends ValueOf<typeof TyranCommandAction>>(
+		action: T,
+		payload: TyranCommandPayloadType<T, 'request'>,
+		onServerResponse?: (
+			payload: TyranCommandPayloadType<T, 'response'>,
+		) => void,
+	): void {
+		if (!this.client || this.client.readyState !== WebSocket.OPEN) {
+			console.error('WebSocket is not open. Cannot send command.');
+			return;
+		}
 
-    this.client.send(JSON.stringify(message));
-  }
+		const id = crypto.randomUUID();
+		const command: TyranRequest = {
+			id,
+			action,
+			payload,
+		};
+
+		// Handle server response if needed
+		if (onServerResponse) {
+			const responseSubscription: ResponseSubscription<T> = {
+				refId: id,
+				action,
+				callback: onServerResponse,
+			};
+
+			if (!this.serverResponseSubscriptions[action]) {
+				this.serverResponseSubscriptions[action] = {};
+			}
+
+			this.serverResponseSubscriptions[action][id] = responseSubscription;
+		}
+
+		this.client.send(JSON.stringify(command));
+	}
 }

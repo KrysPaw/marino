@@ -2,24 +2,24 @@ import type { ChangeEventHandler } from 'react';
 import { StyledInput } from './Input.styled';
 
 type Props = {
-  value?: string;
-  placeholder?: string;
-  width?: string;
-  onChange?: ChangeEventHandler<HTMLInputElement>;
+	value?: string;
+	placeholder?: string;
+	width?: string;
+	onChange?: ChangeEventHandler<HTMLInputElement>;
 };
 
 export const Input = ({
-  value,
-  placeholder,
-  width = '100%',
-  onChange,
+	value,
+	placeholder,
+	width = '100%',
+	onChange,
 }: Props): React.JSX.Element => {
-  return (
-    <StyledInput
-      value={value}
-      placeholder={placeholder}
-      onChange={onChange}
-      $width={width}
-    />
-  );
+	return (
+		<StyledInput
+			value={value}
+			placeholder={placeholder}
+			onChange={onChange}
+			$width={width}
+		/>
+	);
 };
