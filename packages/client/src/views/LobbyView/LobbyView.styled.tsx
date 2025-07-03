@@ -1,4 +1,4 @@
-import styled, { css } from 'styled-components';
+import styled, { css } from "styled-components";
 
 export const StyledContainer = styled.div`
   margin-top: 8px;
@@ -33,10 +33,10 @@ export const StyledPlayerListTitle = styled.h2`
 
 export const StyledPlayerListContainer = styled.div`
   display: flex;
-  flex-direction: column;
   justify-content: center;
+  gap: 72px;
   align-items: center;
-  width: 500px;
+  width: 100%;
 `;
 
 export const StyledPlayerList = styled.div`
@@ -44,10 +44,11 @@ export const StyledPlayerList = styled.div`
   flex-direction: column;
   gap: 8px;
   width: 100%;
+  min-width: 400px;
   margin-top: 24px;
 `;
 
-export const StyledPlayerListItem = styled.div<{ inactive?: boolean }>`
+export const StyledPlayerListItem = styled.div<{ $inactive?: boolean }>`
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -58,16 +59,16 @@ export const StyledPlayerListItem = styled.div<{ inactive?: boolean }>`
   border-radius: 4px;
   color: ${({ theme }) => theme.colors.white_1};
 
-  ${({ inactive, theme }) => {
-		if (inactive) {
-			return css`
+  ${({ $inactive, theme }) => {
+    if ($inactive) {
+      return css`
         opacity: 0.5;
         color: ${theme.colors.gray_1};
       `;
-		}
+    }
 
-		return '';
-	}}
+    return "";
+  }}
 `;
 
 export const StyledOtherPartContainer = styled.div`

@@ -25,5 +25,10 @@ export type General = Prettify<
 	{
 		connected: boolean;
 		connectionLost: boolean;
+		/**
+		 * Indicates that the same session client tries to use is already active.
+		 * This is used to prevent multiple instances of the same client from running.
+		 */
+		sessionAlreadyActive: boolean;
 	} & State
 >;

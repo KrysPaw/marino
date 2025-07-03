@@ -1,6 +1,11 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router';
+import { localStorageOptions } from 'src/config/localStorageOptions';
+import { useServerRequest } from 'src/hooks/useServerRequest';
+import useLocalStorage from 'use-local-storage';
 import { Button } from '../../components/Button/Button';
 import { Input } from '../../components/Input/Input';
+import { useT } from '../../hooks/useT';
 import {
 	StyledButtonsContainer,
 	StyledContainer,
@@ -8,13 +13,12 @@ import {
 	StyledNameInputContainer,
 	StyledTitle,
 } from './WelcomeView.styled';
-import { useNavigate } from 'react-router';
-import { useT } from '../../hooks/useT';
-import { useServerRequest } from 'src/hooks/useServerRequest';
 
 export const WelcomeView = (): React.JSX.Element => {
 	const t = useT();
 	const [enteredName, setEnteredName] = useState('');
+	const [, setNickname] = useLocalStorage('nickname', '', localStorageOptions);
+	const [code] = useLocalStorage('code', '', localStorageOptions);
 	const { send } = useServerRequest();
 	const navigate = useNavigate();
 
@@ -25,8 +29,13 @@ export const WelcomeView = (): React.JSX.Element => {
 	const onContinueClick = () => {
 		if (enteredName) {
 			send('SET_NICKNAME', { nickname: enteredName });
-			localStorage.setItem('user', enteredName);
-			navigate('/menu');
+			setNickname(enteredName);
+
+			if (code) {
+				navigate(`/lobby/${code}`, { replace: true });
+			} else {
+				navigate('/menu', { replace: true });
+			}
 		}
 	};
 

@@ -1,9 +1,9 @@
+import { isEqual } from 'lodash';
 import { useEffect, useRef, useState } from 'react';
 import { Storage } from '../storage';
 import type { State } from '../types/state.type';
-import { isEqual } from 'lodash';
 
-export const useStorage = (): [State, typeof storage.setState] => {
+export const useStorage = (): [Readonly<State>, typeof storage.setState] => {
 	const storage = Storage.getInstance();
 	const unsubFn = useRef<(() => void) | null>(null);
 	const [state, setState] = useState(storage.getState());
@@ -14,9 +14,13 @@ export const useStorage = (): [State, typeof storage.setState] => {
 		}
 
 		unsubFn.current = storage.onChange((newState: State) => {
-			if (!isEqual(newState, state)) {
-				setState(newState);
-			}
+			setState((prevState) => {
+				if (!isEqual(newState, prevState)) {
+					return newState;
+				}
+
+				return prevState;
+			});
 		});
 
 		return () => {

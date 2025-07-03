@@ -1,19 +1,17 @@
+import type {
+	TyranCommandAction,
+	TyranCommandPayloadType,
+	ValueOf,
+} from '@shared';
 import { useEffect, useRef } from 'react';
 import { TyranClient } from '../services/tyran-client/tyran-client';
-import type { TyranCommandAction, TyranCommandsType, ValueOf } from '@shared';
-import type { z } from 'zod/v4';
-
-type Props<T extends ValueOf<typeof TyranCommandAction>> = {
-	action: T;
-	fn: (payload: z.infer<TyranCommandsType[T]['serverRequestSchema']>) => void;
-};
 
 export const UseHandleServerRequest = <
 	T extends ValueOf<typeof TyranCommandAction>,
->({
-	action,
-	fn,
-}: Props<T>) => {
+>(
+	action: T,
+	fn: (payload: TyranCommandPayloadType<T, 'request'>) => void,
+) => {
 	const subId = useRef<string | null>(null);
 
 	const client = TyranClient.getInstance();

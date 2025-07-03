@@ -58,7 +58,7 @@ export const CanvasApp = () => {
 
 						return (
 							<pixiGraphics
-								key={index}
+								key={`index ${xCord} ${yCord}`}
 								draw={(g) => {
 									g.setStrokeStyle({ color: theme.colors.blue_1, width: 2 });
 									g.rect(x + 1, y, 60, 60);

@@ -33,4 +33,15 @@ export const en: Translation = {
 		title: 'Connection error',
 		reconnectButton: 'Reconnect',
 	},
+	sessionAlreadyActive: {
+		title: 'Connection error',
+		description: 'It seems that you already have an active session.',
+		tryAgainButton: 'Try again',
+	},
+	lobby: {
+		title: 'Lobby',
+		players: 'Players',
+		blueTeam: 'Blue team',
+		redTeam: 'Red team',
+	},
 };

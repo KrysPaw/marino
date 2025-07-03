@@ -1,0 +1,21 @@
+{
+  "name": "My DevTools Panel",
+  "version": "1.0",
+  "manifest_version": 3,
+  "description": "Custom DevTools panel for inspecting app state",
+  "devtools_page": "devtools.html",
+  "permissions": ["tabs", "scripting"],
+  "host_permissions": ["http://*/*", "https://*/*"],
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"]
+    }
+  ],
+  "externally_connectable": {
+    "matches": ["https://*/*"]
+  },
+  "background": {
+    "service_worker": "background.js"
+  }
+}

@@ -1,4 +1,5 @@
-export * from './client';
+export * from '../client/client';
+export * from './module-args';
 export * from './optional-schema';
 export * from './request';
 export * from './request.context';

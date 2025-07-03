@@ -1,5 +1,5 @@
-import type React from 'react';
 import type { Position } from '@shared';
+import type React from 'react';
 
 type Props = {
 	position: Position;

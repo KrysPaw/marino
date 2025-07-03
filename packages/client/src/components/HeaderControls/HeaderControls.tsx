@@ -1,14 +1,14 @@
+import { ArrowLeftOutlined, GlobalOutlined } from '@ant-design/icons';
 import type React from 'react';
 import { useRef } from 'react';
 import { Button } from '../Button/Button';
-import { ArrowLeftOutlined, GlobalOutlined } from '@ant-design/icons';
 import 'flag-icons/css/flag-icons.min.css';
+import { useStorage } from 'src/storage/hooks/useStorage';
 import {
 	LanguageModal,
 	type LanguageModalRef,
 } from '../LanguageModal/LanguageModal';
 import { StyledButtonsContainer } from './HeaderControls.styled';
-import { useStorage } from 'src/storage/hooks/useStorage';
 
 export const HeaderControls = (): React.JSX.Element => {
 	const modalRef = useRef<LanguageModalRef>(null);

@@ -1,3 +1,4 @@
+export * from './lobby-player-team';
 export * from './skirmish-state';
 export * from './tyran-command-action';
 export * from './tyran-command-type';

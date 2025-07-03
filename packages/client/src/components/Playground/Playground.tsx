@@ -1,4 +1,5 @@
 import type React from 'react';
+import { CanvasApp } from '../../canvas/canvas-app';
 import {
 	StyledCanvasContainer,
 	StyledContainer,
@@ -7,11 +8,8 @@ import {
 	StyledLeftTopPanel,
 	StyledMapContainer,
 } from './Playground.styled';
-import { CanvasApp } from '../../canvas/canvas-app';
 
-type Props = {};
-
-export const Playground = ({}: Props): React.JSX.Element => {
+export const Playground = (): React.JSX.Element => {
 	return (
 		<StyledContainer>
 			<StyledLeftPanelContainer>

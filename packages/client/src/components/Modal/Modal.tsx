@@ -1,14 +1,14 @@
+import { CloseOutlined } from '@ant-design/icons';
 import type { ValueOf } from '@shared';
+import { motion } from 'framer-motion';
 import ReactModal from 'react-modal';
-import { ModalSize } from './modal-size';
+import { Button } from '../Button/Button';
 import {
 	StyledModalBody,
 	StyledModalContent,
 	StyledModalHeader,
 } from './Modal.styled';
-import { CloseOutlined } from '@ant-design/icons';
-import { Button } from '../Button/Button';
-import { motion } from 'framer-motion';
+import { ModalSize } from './modal-size';
 
 type Props = {
 	isOpen?: boolean;

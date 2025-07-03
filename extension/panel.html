@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>App State Inspector</title>
+    <link rel="stylesheet" href="panel.css" />
+    <script src="panel.js"></script>
+  </head>
+  <body>
+    <div id="state">
+      <div class="tab">
+        <button id="clientStorageBtn" type="button" class="tablinks">
+          Client storage
+        </button>
+        <button id="serverStorageBtn" type="button" class="tablinks">
+          Server storage
+        </button>
+        <button id="connectedClientsBtn" type="button" class="tablinks">
+          Connected clients
+        </button>
+      </div>
+
+      <!-- Tab content -->
+      <div class="code-area clientStorageContent tabcontent">
+        <pre id="json" class="clientStorageCodeArea"></pre>
+      </div>
+
+      <div class="code-area serverStorageContent tabcontent">
+        <pre id="json" class="serverStorageCodeArea"></pre>
+      </div>
+
+      <div class="code-area connectedClientsContent tabcontent">
+        <pre id="json" class="connectedClientsCodeArea"></pre>
+      </div>
+    </div>
+  </body>
+</html>

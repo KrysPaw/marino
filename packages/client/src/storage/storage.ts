@@ -5,10 +5,15 @@ const initialState: State = {
 	general: {
 		connected: false,
 		connectionLost: false,
+		sessionAlreadyActive: false,
 		state: 'MENU',
 	},
 	lobby: {
 		players: [],
+		blueTeam: [],
+		redTeam: [],
+		lobbyId: '',
+		code: '',
 	},
 	game: {
 		players: {},
@@ -37,6 +42,19 @@ export class Storage {
 		}
 
 		Storage.instance = this;
+
+		window.addEventListener('message', (event) => {
+			if (
+				event.data?.source === 'marino-extension' &&
+				event.data.type === 'getClientStorageUpdate'
+			) {
+				window.postMessage({
+					source: 'marino',
+					type: 'clientStorageUpdate',
+					data: this.state,
+				});
+			}
+		});
 	}
 
 	public static getInstance(): Storage {
@@ -51,14 +69,22 @@ export class Storage {
 		return structuredClone(this.state);
 	}
 
-	setState(fn: (prevState: State) => State): void {
-		const newState = fn(structuredClone(this.state));
+	setState(fn: (prevState: State) => void): void {
+		const newState = structuredClone(this.state);
+
+		fn(newState);
 
 		const didChange = !isEqual(this.state, newState);
 
 		this.state = newState;
 
 		if (didChange) {
+			window.postMessage({
+				source: 'marino',
+				type: 'clientStorageUpdate',
+				data: this.state,
+			});
+
 			const subscriptions = Object.values(this.changeSubscriptions);
 
 			for (const subscription of subscriptions) {

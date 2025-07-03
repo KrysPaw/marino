@@ -3,17 +3,15 @@ import {
 	isTyranCommandValid,
 	type TyranCommandAction,
 	type TyranCommandPayloadType,
-	type TyranCommandsType,
 	type ValueOf,
 } from '@shared';
 import { Storage } from 'src/storage/storage';
-import type { z } from 'zod/v4';
 import type { TyranRequest } from '../../../../shared/src/types/tyran-request';
 
 type RequestSubscription<T extends ValueOf<typeof TyranCommandAction>> = {
 	id: string;
 	action: T;
-	callback: (payload: z.infer<TyranCommandsType[T]['request']>) => void;
+	callback: (payload: TyranCommandPayloadType<T, 'request'>) => void;
 };
 
 type ResponseSubscription<T extends ValueOf<typeof TyranCommandAction>> = {
@@ -53,13 +51,29 @@ export class TyranClient {
 	}
 
 	public async connect(): Promise<void> {
-		console.log('Connect triggered', this.client?.readyState);
 		if (this.client && this.client.readyState === WebSocket.OPEN) {
 			console.warn('WebSocket is already connected.');
 			return;
 		}
 
-		this.client = new WebSocket('ws://localhost:3000');
+		const url = new URL('ws://localhost:3000');
+
+		let sessionId = localStorage.getItem('sessionId');
+
+		if (!sessionId) {
+			sessionId = crypto.randomUUID();
+			localStorage.setItem('sessionId', sessionId);
+		}
+
+		const nickname = localStorage.getItem('nickname');
+
+		url.searchParams.set('sessionId', sessionId);
+
+		if (nickname) {
+			url.searchParams.set('nickname', nickname);
+		}
+
+		this.client = new WebSocket(url.toString());
 
 		// Assign on connect and on disconnect handlers
 		this.client.onopen = () => {
@@ -68,17 +82,22 @@ export class TyranClient {
 			Storage.getInstance().setState((state) => {
 				state.general.connected = true;
 				state.general.connectionLost = false;
+				state.general.sessionAlreadyActive = false;
 				return state;
 			});
 		};
 
-		this.client.onclose = () => {
+		this.client.onclose = (ev) => {
+			const sessionAlreadyActive =
+				ev.code === 1008 && ev.reason === 'SESSION_ALREADY_ACTIVE';
+
 			Storage.getInstance().setState((state) => {
 				state.general.connected = false;
 				state.general.connectionLost = true;
+				state.general.sessionAlreadyActive = sessionAlreadyActive;
 				return state;
 			});
-			console.log('Disconnected from server');
+			console.log('Disconnected from server', ev);
 		};
 
 		this.client.onmessage = (event) => {
@@ -107,12 +126,29 @@ export class TyranClient {
 			if (subscription) {
 				subscription.callback(data.payload);
 			}
+
+			return;
+		}
+
+		// Handle request message
+		const subscriptions = this.serverRequestSubscriptions[data.action];
+
+		if (!subscriptions) {
+			console.warn(`No subscriptions found for action: ${data.action}`);
+
+			return;
+		}
+
+		for (const subscription of Object.values(subscriptions)) {
+			if (subscription) {
+				subscription.callback(data.payload);
+			}
 		}
 	}
 
 	subscribe<T extends ValueOf<typeof TyranCommandAction>>(
 		action: T,
-		callback: (payload: z.infer<TyranCommandsType[T]['request']>) => void,
+		callback: (payload: TyranCommandPayloadType<T, 'request'>) => void,
 	): string {
 		const id = crypto.randomUUID();
 		const subscription: RequestSubscription<T> = { id, action, callback };

@@ -32,4 +32,15 @@ export const pl: Translation = {
 		title: 'Brak połączenia',
 		reconnectButton: 'Spróbuj ponownie',
 	},
+	sessionAlreadyActive: {
+		title: 'Błąd połączenia',
+		description: 'Wydaje się, że masz już aktywną sesję.',
+		tryAgainButton: 'Spróbuj ponownie',
+	},
+	lobby: {
+		title: 'Poczekalnia',
+		players: 'Gracze',
+		blueTeam: 'Drużyna niebieska',
+		redTeam: 'Drużyna czerwona',
+	},
 };

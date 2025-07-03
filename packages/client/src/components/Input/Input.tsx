@@ -16,6 +16,8 @@ export const Input = ({
 }: Props): React.JSX.Element => {
 	return (
 		<StyledInput
+			autoComplete="off"
+			spellCheck={false}
 			value={value}
 			placeholder={placeholder}
 			onChange={onChange}

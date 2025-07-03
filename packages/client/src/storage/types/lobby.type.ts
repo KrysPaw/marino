@@ -1,8 +1,13 @@
 type Player = {
+	isHost: boolean;
 	id: string;
-	name: string;
+	nickname: string;
 };
 
 export type Lobby = {
+	lobbyId: string;
+	code: string;
 	players: Player[];
+	blueTeam: Player[];
+	redTeam: Player[];
 };

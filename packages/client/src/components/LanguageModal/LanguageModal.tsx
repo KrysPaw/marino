@@ -1,13 +1,13 @@
+import { CheckCircleOutlined } from '@ant-design/icons';
 import { forwardRef, useImperativeHandle, useState } from 'react';
-import { Modal } from '../Modal/Modal';
+import { useTranslation } from 'react-i18next';
+import { useT } from '../../hooks/useT';
 import { Button } from '../Button/Button';
+import { Modal } from '../Modal/Modal';
 import {
 	StyledLanguageList,
 	StyledLanguageOption,
 } from './LanguageModal.styled';
-import { CheckCircleOutlined } from '@ant-design/icons';
-import { useTranslation } from 'react-i18next';
-import { useT } from '../../hooks/useT';
 
 const languages = [
 	{ code: 'pl', name: 'Polski', flag: 'fi fi-pl' },
@@ -20,7 +20,7 @@ export type LanguageModalRef = {
 	open: () => void;
 };
 
-export const LanguageModal = forwardRef(({}, ref): React.JSX.Element => {
+export const LanguageModal = forwardRef((_, ref): React.JSX.Element => {
 	const [isModalOpen, setModalOpen] = useState(false);
 	const t = useT();
 	const { i18n } = useTranslation();

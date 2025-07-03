@@ -5,7 +5,7 @@ import './global.css';
 import './config/i18n.ts';
 import App from './App.tsx';
 
-createRoot(document.getElementById('root')!).render(
+createRoot(document.getElementById('root') as HTMLElement).render(
 	<StrictMode>
 		<App />
 	</StrictMode>,

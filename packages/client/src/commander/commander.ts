@@ -62,7 +62,7 @@ export class Commander {
 	 * Returns true if the subscription was found and removed, false otherwise.
 	 */
 	unsubscribe<T extends LocalActionType>(id: string, action: T): boolean {
-		if (this.subscriptions[action] && this.subscriptions[action][id]) {
+		if (this.subscriptions[action]?.[id]) {
 			delete this.subscriptions[action][id];
 
 			return true;

@@ -1,8 +1,49 @@
 {
-	"editor.defaultFormatter": "esbenp.prettier-vscode",
-	"editor.formatOnPaste": true, // required
-	"editor.formatOnType": false, // required
-	"editor.formatOnSave": true, // optional
-	"editor.formatOnSaveMode": "file",
-	"cSpell.words": ["unsub"] // required to format on save
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.formatOnPaste": true, // required
+  "editor.formatOnType": false, // required
+  "editor.formatOnSave": true, // optional
+  "editor.formatOnSaveMode": "file",
+  "cSpell.words": ["unsub"], // required to format on save,
+  "restoreTerminals.terminals": [
+    {
+      "splitTerminals": [
+        {
+          "name": "marino root"
+        }
+      ]
+    },
+    {
+      "splitTerminals": [
+        {
+          "name": "server",
+          "commands": ["cd ./packages/server"]
+        }
+      ]
+    },
+    {
+      "splitTerminals": [
+        {
+          "name": "client",
+          "commands": ["cd ./packages/client"]
+        }
+      ]
+    },
+    {
+      "splitTerminals": [
+        {
+          "name": "shared",
+          "commands": ["cd ./packages/shared"]
+        }
+      ]
+    },
+    {
+      "splitTerminals": [
+        {
+          "name": "tyran6",
+          "commands": ["cd ./packages/tyran6"]
+        }
+      ]
+    }
+  ]
 }

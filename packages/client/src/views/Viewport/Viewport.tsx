@@ -26,6 +26,7 @@ export const Viewport = ({ children }: Props): React.JSX.Element => {
 	}, [size.width, size.height]);
 
 	return (
+		// biome-ignore lint/nursery/useUniqueElementIds: no unique ID needed
 		<StyledViewport scale={scale} id="game-view">
 			{children}
 		</StyledViewport>
