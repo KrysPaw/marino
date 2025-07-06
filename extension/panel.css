@@ -42,8 +42,57 @@
   font-family: monospace;
   font-size: 14px;
   line-height: 1.5;
-  padding: 0px 24px;
+  padding: 24px 24px;
   box-sizing: border-box;
   overflow-y: auto;
   background: whitesmoke;
+}
+
+.code-area-payload {
+  width: 100%;
+  height: calc(100vh - 110px);
+  font-family: monospace;
+  font-size: 14px;
+  line-height: 1.5;
+  padding: 24px 24px;
+  box-sizing: border-box;
+  overflow-y: auto;
+  background: whitesmoke;
+}
+
+.rows {
+  display: flex;
+  flex-direction: row;
+  gap: 4px;
+  width: 100%;
+  padding: 8px;
+  height: calc(100vh - 110px);
+}
+
+.commands-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  width: 50%;
+  padding: 8px;
+  margin-right: 4px;
+  overflow-y: scroll;
+}
+
+.commands-list-item {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  padding: 4px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.outgoing-command {
+  background-color: #c0f8ff;
+}
+
+.incoming-command {
+  background-color: #ffe0b2;
 }

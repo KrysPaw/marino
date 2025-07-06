@@ -1,8 +1,13 @@
+const handledTypes = [
+  "clientStorageUpdate",
+  "serverStorageUpdate",
+  "clientCommandsTrackerUpdate",
+];
+
 window.addEventListener("message", (event) => {
   if (
     event.data?.source === "marino" &&
-    (event.data.type === "clientStorageUpdate" ||
-      event.data.type === "serverStorageUpdate")
+    handledTypes.includes(event.data.type)
   ) {
     chrome.runtime.sendMessage(event.data);
   }

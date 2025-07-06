@@ -1,8 +1,42 @@
 chrome.runtime.onMessage.addListener((msg) => {
-  console.log("Received message in panel.js:", msg);
   if (msg.type === "clientStorageUpdate") {
     document.getElementsByClassName("clientStorageCodeArea")[0].textContent =
-      JSON.stringify(msg.data.storageState, null, 4);
+      JSON.stringify(msg.data, null, 4);
+  }
+
+  if (msg.type === "clientCommandsTrackerUpdate") {
+    const items = msg.data.map((command) => {
+      const item = document.createElement("div");
+      const typeClass =
+        command.type === "OUTGOING" ? "outgoing-command" : "incoming-command";
+      const handledString =
+        command.handled === true
+          ? "[handled]"
+          : command.handled === false
+          ? "[unhandled]"
+          : "";
+      item.className = `commands-list-item ${typeClass}`;
+      item.textContent = `${new Date(
+        command.timestamp
+      ).toLocaleTimeString()} - ${command.type} - ${
+        command.action
+      } - ${handledString}`;
+
+      item.addEventListener("click", () => {
+        const payloadArea = document.getElementsByClassName(
+          "clientCommandsTrackerPayloadArea"
+        )[0];
+        payloadArea.textContent = JSON.stringify(command.payload, null, 4);
+      });
+
+      return item;
+    });
+
+    document.getElementsByClassName("commands-list")[0].innerHTML = "";
+
+    items.forEach((item) => {
+      document.getElementsByClassName("commands-list")[0].appendChild(item);
+    });
   }
 
   if (msg.type === "serverStorageUpdate") {
@@ -33,6 +67,12 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
   document
+    .getElementById("clientCommandsTrackerBtn")
+    .addEventListener("click", (event) => {
+      openSection(event, "clientCommandsTrackerContent");
+    });
+
+  document
     .getElementById("serverStorageBtn")
     .addEventListener("click", (event) => {
       openSection(event, "serverStorageContent");
@@ -46,8 +86,6 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 function openSection(evt, name) {
-  console.log("openCity called with cityName:", name);
-  console.log("onclick");
   var i;
   var tabcontent;
   var tablinks;

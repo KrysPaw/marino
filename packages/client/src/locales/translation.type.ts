@@ -1,3 +1,11 @@
+import type { ExceptionCase, ValueOf } from "@shared";
+
+type Exception = {
+	title: string;
+	description?: string;
+	actionButton?: string;
+}
+
 export type Translation = {
 	header: {
 		logo: string;
@@ -35,12 +43,18 @@ export type Translation = {
 		description: string;
 		tryAgainButton: string;
 	};
+	kickedFromLobby: {
+		title: string;
+		description: string;
+		returnToMenuButton: string;
+	}
 	lobby: {
 		title: string;
 		players: string;
 		blueTeam: string;
 		redTeam: string;
 	};
+	exceptions: Record<ValueOf<typeof ExceptionCase>, Exception>
 };
 
 type Join<K, P> = K extends string | number

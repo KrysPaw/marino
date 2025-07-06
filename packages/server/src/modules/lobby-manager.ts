@@ -27,6 +27,7 @@ export class LobbyManager {
 
     const lobby = new Lobby(this, id, code, {
       id: clientId,
+      type: 'MOST_LIKELY_HUMAN',
       isHost: true,
       nickname: this.context.clients.getConnectedClientById(clientId)?.nickname || 'No-name',
     });

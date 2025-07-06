@@ -7,6 +7,7 @@ import {
 } from '@shared';
 import { Storage } from 'src/storage/storage';
 import type { TyranRequest } from '../../../../shared/src/types/tyran-request';
+import { TyranCommandsTracker } from './tyran-commands-tracker';
 
 type RequestSubscription<T extends ValueOf<typeof TyranCommandAction>> = {
 	id: string;
@@ -36,10 +37,12 @@ export class TyranClient {
 			ResponseSubscription<K>
 		>;
 	} = {};
+	private commandsTracker: TyranCommandsTracker;
 
 	private constructor() {
 		// Private constructor to prevent instantiation
 		this.connect();
+		this.commandsTracker = new TyranCommandsTracker();
 	}
 
 	public static getInstance(): TyranClient {
@@ -127,6 +130,14 @@ export class TyranClient {
 				subscription.callback(data.payload);
 			}
 
+			this.commandsTracker.addCommand({
+				type: 'INCOMING',
+				action: data.action,
+				payload: data.payload,
+				timestamp: Date.now(),
+				handled: !!subscription
+			});
+
 			return;
 		}
 
@@ -139,11 +150,22 @@ export class TyranClient {
 			return;
 		}
 
+		let handled = false;
+
 		for (const subscription of Object.values(subscriptions)) {
 			if (subscription) {
 				subscription.callback(data.payload);
+				handled = true;
 			}
 		}
+
+		this.commandsTracker.addCommand({
+			type: 'INCOMING',
+			action: data.action,
+			payload: data.payload,
+			timestamp: Date.now(),
+			handled
+		});
 	}
 
 	subscribe<T extends ValueOf<typeof TyranCommandAction>>(
@@ -209,5 +231,11 @@ export class TyranClient {
 		}
 
 		this.client.send(JSON.stringify(command));
+		this.commandsTracker.addCommand({
+			type: 'OUTGOING',
+			action,
+			payload,
+			timestamp: Date.now(),
+		});
 	}
 }

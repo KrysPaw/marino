@@ -1,8 +1,11 @@
-import styled from 'styled-components';
+import styled from "styled-components";
 
-export const StyledViewport = styled.div<{ scale: number }>`
+export const StyledViewport = styled.div.attrs((props: any) => ({
+  style: {
+    transform: `scale(${props.scale})`,
+  },
+}))<{ scale: number }>`
   position: absolute;
-  transform: scale(${(props) => props.scale});
   width: 1700px;
   height: 960px;
   background: ${({ theme }) => theme.colors.darkBlue_1}66;

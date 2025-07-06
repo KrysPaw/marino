@@ -1,22 +1,21 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect } from "react";
 import { useLocation, useNavigate } from "react-router";
-import { Tooltip } from "react-tooltip";
 import useLocalStorage from "use-local-storage";
 import { localStorageOptions } from "./config/localStorageOptions";
+import { useExceptions } from "./hooks/useExceptions";
 import { useStorage } from "./storage/hooks/useStorage";
+import { ExceptionView } from "./views/ExceptionView/ExceptionView";
+import { GameView } from "./views/GameView/GameView";
 import { LobbyView } from "./views/LobbyView/LobbyView";
 import { MenuView } from "./views/MenuView/MenuView";
-import { NoConnectionErrorView } from "./views/NoConnectionError/NoConnectionErrorView";
-import { SessionAlreadyActiveView } from "./views/SessionAlreadyActive/SessionAlreadyActiveView";
 import { WelcomeView } from "./views/WelcomeView/WelcomeView";
 
 export const Router = (): React.JSX.Element => {
   const { pathname } = useLocation();
   const navigate = useNavigate();
   const [nickname] = useLocalStorage("nickname", "", localStorageOptions);
-  // const [sessionId] = useLocalStorage('sessionId', '', localStorageOptions);
-  // const [lobbyId] = useLocalStorage('lobbyId', '', localStorageOptions);
+  const exception = useExceptions();
   const [state, setState] = useStorage();
 
   const setLocation = (newLocation: string) => {
@@ -44,19 +43,22 @@ export const Router = (): React.JSX.Element => {
 
   let content: React.ReactElement;
 
-  if (state.general.sessionAlreadyActive) {
-    content = <SessionAlreadyActiveView key="session-already-active-view" />;
-  } else if (state.general.connectionLost || !state.general.connected) {
-    content = <NoConnectionErrorView key="no-connection-error-view" />;
+  if (exception) {
+    content = (
+      <ExceptionView type={exception} key={`exception-view-${exception}`} />
+    );
   } else if (!nickname) {
     setLocation("/");
     content = <WelcomeView key="welcome-view" />;
-  } else if (state.lobby.code) {
-    setLocation(`/lobby/${state.lobby.code}`);
-    content = <LobbyView key="lobby-view" />;
   } else if (place === "menu" || place === undefined) {
     setLocation("/menu");
     content = <MenuView key="menu-view" />;
+  } else if (place === "lobby" && state.lobby.state === "IN_PROGRESS") {
+    setLocation(`/lobby/${state.lobby.code}`);
+    content = <GameView key="game-view" />;
+  } else if (place === "lobby" && state.lobby.code) {
+    setLocation(`/lobby/${state.lobby.code}`);
+    content = <LobbyView key="lobby-view" />;
   } else {
     content = (
       <div key="not-covered-view">Not covered case. Reached the end</div>

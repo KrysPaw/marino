@@ -30,5 +30,6 @@ export type General = Prettify<
 		 * This is used to prevent multiple instances of the same client from running.
 		 */
 		sessionAlreadyActive: boolean;
+		kickedFromLobby: boolean;
 	} & State
 >;

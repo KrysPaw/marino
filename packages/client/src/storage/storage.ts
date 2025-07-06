@@ -13,6 +13,7 @@ const initialState: State = {
 		blueTeam: [],
 		redTeam: [],
 		lobbyId: '',
+		state: 'LOBBY',
 		code: '',
 	},
 	game: {

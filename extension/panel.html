@@ -11,6 +11,9 @@
         <button id="clientStorageBtn" type="button" class="tablinks">
           Client storage
         </button>
+        <button id="clientCommandsTrackerBtn" type="button" class="tablinks">
+          Client commands tracker
+        </button>
         <button id="serverStorageBtn" type="button" class="tablinks">
           Server storage
         </button>
@@ -19,9 +22,18 @@
         </button>
       </div>
 
-      <!-- Tab content -->
       <div class="code-area clientStorageContent tabcontent">
         <pre id="json" class="clientStorageCodeArea"></pre>
+      </div>
+
+      <div class="clientCommandsTrackerContent tabcontent">
+        <div class="rows">
+          <div class="commands-list"></div>
+          <pre
+            id="json"
+            class="code-area-payload clientCommandsTrackerPayloadArea"
+          ></pre>
+        </div>
       </div>
 
       <div class="code-area serverStorageContent tabcontent">

@@ -6,7 +6,7 @@ import type {
 import { useEffect, useRef } from 'react';
 import { TyranClient } from '../services/tyran-client/tyran-client';
 
-export const UseHandleServerRequest = <
+export const useHandleServerRequest = <
 	T extends ValueOf<typeof TyranCommandAction>,
 >(
 	action: T,

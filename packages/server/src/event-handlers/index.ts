@@ -22,12 +22,10 @@ app.setOnClientLeaveHandler(({ client, modules, send }) => {
   const remainingPlayers = lobby.getPlayers();
 
   for (const player of remainingPlayers) {
-    send(player.id, "UPDATE_LOBBY_INFO", {
-      code: lobby.getCode(),
-      lobbyId: lobby.getId(),
-      players: remainingPlayers,
-      blueTeam: lobby.getBlueTeam(),
-      redTeam: lobby.getRedTeam(),
-    });
+    if (player.type === 'AI') {
+      continue;
+    }
+
+    send(player.id, "UPDATE_LOBBY_INFO", lobby.getInfo());
   }
 });

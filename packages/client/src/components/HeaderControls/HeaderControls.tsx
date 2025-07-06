@@ -1,51 +1,49 @@
-import { ArrowLeftOutlined, GlobalOutlined } from '@ant-design/icons';
-import type React from 'react';
-import { useRef } from 'react';
-import { Button } from '../Button/Button';
-import 'flag-icons/css/flag-icons.min.css';
-import { useStorage } from 'src/storage/hooks/useStorage';
+import { ArrowLeftOutlined, GlobalOutlined } from "@ant-design/icons";
+import type React from "react";
+import { useRef } from "react";
+import { Button } from "../Button/Button";
+import "flag-icons/css/flag-icons.min.css";
+import { useLocation, useNavigate } from "react-router";
 import {
-	LanguageModal,
-	type LanguageModalRef,
-} from '../LanguageModal/LanguageModal';
-import { StyledButtonsContainer } from './HeaderControls.styled';
+  LanguageModal,
+  type LanguageModalRef,
+} from "../LanguageModal/LanguageModal";
+import { StyledButtonsContainer } from "./HeaderControls.styled";
 
 export const HeaderControls = (): React.JSX.Element => {
-	const modalRef = useRef<LanguageModalRef>(null);
-	const [state] = useStorage();
+  const modalRef = useRef<LanguageModalRef>(null);
+  const navigate = useNavigate();
+  const location = useLocation();
 
-	const onLocalizationButtonClick = () => {
-		modalRef.current?.open();
-	};
+  const onLocalizationButtonClick = () => {
+    modalRef.current?.open();
+  };
 
-	const onBackButtonClick = () => {
-		switch (state.general.state) {
-			case 'MENU':
-				// Handle back button in menu state if needed
-				break;
-			case 'GAME':
-				// Handle back button in game state if needed
-				break;
-			case 'LOBBY':
-				// Handle back button in lobby state if needed
-				break;
-			default:
-				// Default action or no action
-				break;
-		}
-	};
+  const onBackButtonClick = () => {
+    switch (location.pathname.split("/")[1]) {
+      case "menu":
+        break;
+      case "lobby":
+        navigate("/menu", { replace: true });
+        break;
+      case "game":
+        break;
+      default:
+        break;
+    }
+  };
 
-	return (
-		<StyledButtonsContainer>
-			{state.general.state !== 'MENU' && (
-				<Button onClick={onBackButtonClick}>
-					<ArrowLeftOutlined style={{ fontSize: '32px' }} />
-				</Button>
-			)}
-			<Button onClick={onLocalizationButtonClick}>
-				<GlobalOutlined style={{ fontSize: '32px' }} />
-			</Button>
-			<LanguageModal ref={modalRef} />
-		</StyledButtonsContainer>
-	);
+  return (
+    <StyledButtonsContainer>
+      {location.pathname !== "/menu" && (
+        <Button onClick={onBackButtonClick}>
+          <ArrowLeftOutlined style={{ fontSize: "32px" }} />
+        </Button>
+      )}
+      <Button onClick={onLocalizationButtonClick}>
+        <GlobalOutlined style={{ fontSize: "32px" }} />
+      </Button>
+      <LanguageModal ref={modalRef} />
+    </StyledButtonsContainer>
+  );
 };

@@ -1,3 +1,4 @@
+import { centeredContent } from "src/styled/common.styled";
 import styled, { css } from "styled-components";
 
 export const StyledContainer = styled.div`
@@ -49,6 +50,7 @@ export const StyledPlayerList = styled.div`
 `;
 
 export const StyledPlayerListItem = styled.div<{ $inactive?: boolean }>`
+  user-select: none;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -62,7 +64,7 @@ export const StyledPlayerListItem = styled.div<{ $inactive?: boolean }>`
   ${({ $inactive, theme }) => {
     if ($inactive) {
       return css`
-        opacity: 0.5;
+        background-color: ${theme.colors.darkBlue_1}77;
         color: ${theme.colors.gray_1};
       `;
     }
@@ -77,4 +79,21 @@ export const StyledOtherPartContainer = styled.div`
   justify-content: center;
   align-items: center;
   flex: 1;
+`;
+
+export const StyledButtonContainer = styled.div`
+  margin-top: 64px;
+`;
+
+export const StyledGameStartCounterContainer = styled.div`
+  ${centeredContent}
+  height: 330px;
+`;
+
+export const StyledGameStartCounter = styled.span`
+  user-select: none;
+  font-size: 144px;
+  font-weight: 500;
+  color: ${({ theme }) => theme.colors.white_1};
+  text-shadow: 2px 2px 4px rgba(62, 62, 62, 1);
 `;
